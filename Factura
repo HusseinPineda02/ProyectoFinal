@@ -1,0 +1,44 @@
+package hospital;
+
+import java.util.Date;
+
+public class Factura {
+    private int id;
+    private String tipoPago;
+    private double monto;
+    private Date fecha;
+
+    public Factura(int id, String tipoPago, double monto, Date fecha) {
+        this.id = id;
+        this.tipoPago = tipoPago;
+        this.monto = monto;
+        this.fecha = fecha;
+    }
+
+    public void realizarPago() {
+        System.out.println("Pago realizado con éxito.");
+    }
+
+    public void anularPago() {
+        System.out.println("Pago anulado.");
+    }
+
+    public void mostrarDatosPago() {
+        System.out.println("Factura #" + id + " - Tipo de pago: " + tipoPago + " - Monto: $" + monto);
+    }
+
+    public void modificarMonto(double nuevoMonto) {
+        this.monto = nuevoMonto;
+    }
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getTipoPago() { return tipoPago; }
+    public void setTipoPago(String tipoPago) { this.tipoPago = tipoPago; }
+    public double getMonto() { return monto; }
+    public void setMonto(double monto) { this.monto = monto; }
+    public Date getFecha() { return fecha; }
+    public void setFecha(Date fecha) { this.fecha = fecha; }
+}
+
+
