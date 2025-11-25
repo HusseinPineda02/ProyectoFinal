@@ -4,7 +4,7 @@ public class GestorMedicamentos {
 
     private ArrayList<Medicamento> lista;
 
-    public Medicamentos() {
+    public GestorMedicamentos() {
         this.lista = new ArrayList<>();
     }
 
