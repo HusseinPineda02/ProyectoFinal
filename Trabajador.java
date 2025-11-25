@@ -1,49 +1,32 @@
-public abstract class Trabajador {
 
-    String nombre, apePaterno, apeMaterno, id, dni;
-    double salario;
+import java.time.LocalDate;
 
-    public Trabajador(){
+public abstract class Trabajador extends Persona {
 
+    private String idTrabajador;
+    private double salario;
+
+    public Trabajador(String nombre, String apellidoP, String apellidoM, String dni, LocalDate fechaNacimiento, String idTrabajador, double salario){
+        super(nombre, apellidoP, apellidoM, dni, fechaNacimiento);
+        this.idTrabajador = idTrabajador;
+        this.salario = salario;
     }
-    public void setNombre(String nombre){
-        this.nombre = nombre;
+    public void setId(String idTrabajador){
+        this.idTrabajador = idTrabajador;
     }
-    public void setApePaterno(String apePaterno){
-        this.apePaterno= apePaterno;
-    }
-    public void setApeMaterno(String apeMaterno){
-        this.apeMaterno= apeMaterno;
-    }
-    public void setId(String id){
-        this.id = id;
-    }
-    public void setDni(String dni){
-        this.dni = dni;
-    }
+ 
     public void setSalario(double salario){
         this.salario = salario;
     }
-    public String getNombre(){
-        return nombre;
-    }
-    public String getApePaterno(){
-        return apePaterno;
-    }
-    public String getApeMaterno(){
-        return apeMaterno;
-    }
-    public String getId(){
-        return id;
-    }
-    public String getDni(){
-        return dni;
+ 
+    public String getIdTrabajador(){
+        return idTrabajador;
     }
     public double getSalario(){
         return salario;
     }
-    
-
-
+    public abstract void registrarEntrada();
+    public abstract void registrarSalida();
+    public abstract double calcularSalarioMensual();
 
 }

@@ -1,16 +1,23 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 public class Administrativo extends Trabajador {
 
     Scanner sc = new Scanner(System.in);
+    String area;
 
-    ArrayList<Paciente> pacientes = new ArrayList<>();
-    ArrayList<Cita> citas = new ArrayList<>();
-    
-    public Administrativo() {
-
+    public Administrativo(String nombre, String apellidoP, String apellidoM, String dni, LocalDate fechaNacimiento, String idTrabajador, double salario, String area) {
+        super(nombre, apellidoP, apellidoM, dni, fechaNacimiento, idTrabajador, salario);
+        this.area = area;
     }
 
+    public void setArea(String area){
+        this.area = area;
+    }
+    public String getArea(){
+        return area;
+    }
+    
     public void generarCita(Paciente paciente){
         System.out.println("Cita generada para paciente: " + paciente.getNombre());
         int idCita = citas.size();
@@ -62,8 +69,18 @@ public class Administrativo extends Trabajador {
         }
     }
 
+    @Override
+    public void registrarEntrada() {
 
+    }
+    @Override
+    public void registrarSalida() {
 
+    }
 
+    @Override
+    public double calcularSalarioMensual() {
+        return this.getSalario();
+    }
 
 }
