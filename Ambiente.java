@@ -26,7 +26,7 @@ public abstract class Ambiente {
         ocupar();
     }
     
-    public abstract void mostrarTipo();  //PARA CONSULTORIO Y SALA
+    public abstract void mostrarTipo();  
     
     public void mostrarInformacion() {
         System.out.println("Ambiente ID: " + id + " | Piso: " + piso + " | N°: " + numero);
