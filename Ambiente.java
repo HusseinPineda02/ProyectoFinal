@@ -5,7 +5,7 @@ public abstract class Ambiente {
     protected int piso;
     protected int numero;
     protected boolean disponible;
-    protected ArrayList<Cita> citas = new ArrayList<>();
+    protected ArrayList<Cita> citas = new ArrayList<>(); 
 
     public Ambiente(int id, int piso, int numero) {
         this.id = id;
@@ -15,29 +15,28 @@ public abstract class Ambiente {
     }
     public void ocupar() {
         this.disponible = false;
-        System.out.println("Ambiente " + numero + " → OCUPADO");
+        System.out.println("Ambiente " + numero + " ocupado.");
     }
     public void liberar() {
         this.disponible = true;
-        System.out.println("Ambiente " + numero + " → LIBRE");
+        System.out.println("Ambiente " + numero + " liberado.");
     }
     public void agregarCita(Cita cita) {
         citas.add(cita);
         ocupar();
     }
-
-// MEtodo abstracto
-    public abstract void mostrarTipo();
-
+    
+    public abstract void mostrarTipo();  //PARA CONSULTORIO Y SALA
+    
     public void mostrarInformacion() {
-        System.out.println("ID: " + id + " | Piso: " + piso + " | Número: " + numero);
-        System.out.println("Estado: " + (disponible ? "LIBRE" : "OCUPADO"));
-        System.out.print("Tipo: ");
+        System.out.println("Ambiente ID: " + id + " | Piso: " + piso + " | N°: " + numero);
+        System.out.print("Estado: " + (disponible ? "LIBRE" : "OCUPADO"));
+        System.out.print(" | Tipo: ");
         mostrarTipo();
-        System.out.println("Citas programadas: " + citas.size());
+        System.out.println(" | Citas: " + citas.size());
     }
 
-//Getters
+    //GEETTERS
     public int getNumero() { return numero; }
     public boolean isDisponible() { return disponible; }
 }
