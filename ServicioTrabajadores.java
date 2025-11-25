@@ -1,25 +1,42 @@
 import java.util.ArrayList;
 
 public class ServicioTrabajadores {
+    private Hospital hospital;
 
-    private ArrayList<Trabajador> trabajadores;
-
-    public ServicioTrabajadores() {
-        trabajadores = new ArrayList<>();
+    public ServicioTrabajadores(Hospital hospital) {
+        this.hospital = hospital;
     }
 
     public void registrarTrabajador(Trabajador t) {
-        trabajadores.add(t);
+        if(t instanceof Doctor) hospital.getDoctores().add((Doctor)t);
+        else if(t instanceof Enfermero) hospital.getEnfermeros().add((Enfermero)t);
+        else if(t instanceof Administrativo) hospital.getAdministrativos().add((Administrativo)t);
     }
+
     public Trabajador buscarTrabajador(String id) {
-        for(Trabajador t : trabajadores){
-            if(t.getIdTrabajador().equals(id)){
-                return t;
+        for(Doctor d : hospital.getDoctores()){
+            if(d.getIdTrabajador().equals(id)){
+                return d;
+            }
+        }
+        for(Enfermero e : hospital.getEnfermeros()){
+            if(e.getIdTrabajador().equals(id)){
+                return e;
+            }
+        } 
+        for(Administrativo a : hospital.getAdministrativos()){
+            if(a.getIdTrabajador().equals(id)){
+                return a;
             }
         }
         return null;
     }
+
     public ArrayList<Trabajador> mostrarTrabajadores() {
-        return trabajadores;
+        ArrayList<Trabajador> lista = new ArrayList<>();
+        lista.addAll(hospital.getDoctores());
+        lista.addAll(hospital.getEnfermeros());
+        lista.addAll(hospital.getAdministrativos());
+        return lista;
     }
 }
