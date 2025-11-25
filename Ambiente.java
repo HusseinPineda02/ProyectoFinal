@@ -13,7 +13,7 @@ public abstract class Ambiente {
         this.piso = piso;
         this.numero = numero;
         this.disponible = true;
-        this.citas = new ArrayList<>();  // inicializo el ArrayList
+        this.citas = new ArrayList<>();
     }
     
     public int getId() { 
