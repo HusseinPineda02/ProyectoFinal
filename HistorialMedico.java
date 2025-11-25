@@ -21,3 +21,30 @@ public class HistorialMedico {
         }
     }
 }
+public int getTotalRegistros() {
+        return registros.size();
+    }
+    public String getUltimoRegistro() {
+        if (registros.isEmpty()) {
+            return "Sin registros";
+        }
+        return registros.get(registros.size() - 1);
+    }
+    public boolean tieneDiagnostico(String palabra) {
+        for (String r : registros) {
+            if (r.toLowerCase().contains(palabra.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void mostrarConNumeros() {
+        System.out.println("HISTORIAL COMPLETO - DNI: " + dniPaciente);
+        System.out.println("===========================================");
+        for (int i = 0; i < registros.size(); i++) {
+            System.out.printf("%2d. %s%n", i + 1, registros.get(i));
+        }
+        System.out.println("===========================================");
+        System.out.println("Total de registros: " + registros.size() + "\n");
+    }
