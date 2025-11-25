@@ -5,7 +5,7 @@ public abstract class Ambiente {
     protected int piso;
     protected int numero;
     protected boolean disponible;
-    protected ArrayList<Cita> citas = new ArrayList<>();  // ArrayList obligatorio
+    protected ArrayList<Cita> citas = new ArrayList<>();
 
     public Ambiente(int id, int piso, int numero) {
         this.id = id;
