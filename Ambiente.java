@@ -35,8 +35,3 @@ public abstract class Ambiente {
         mostrarTipo();
         System.out.println(" | Citas: " + citas.size());
     }
-
-    //GEETTERS
-    public int getNumero() { return numero; }
-    public boolean isDisponible() { return disponible; }
-}
