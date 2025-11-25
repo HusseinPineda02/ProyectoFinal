@@ -1,14 +1,27 @@
 import java.util.Scanner;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Enfermero extends Trabajador {
+
     Scanner sc = new Scanner(System.in);
-    String especialidad;
+
+    private String turno;
+
     ArrayList<String> notasEnf = new ArrayList<>();
 
-    public Enfermero(){
-
+    public Enfermero(String nombre, String apellidoP, String apellidoM, String dni, LocalDate fechaNacimiento, String idTrabajador, double salario, String turno) {
+        super(nombre, apellidoP, apellidoM, dni, fechaNacimiento, idTrabajador, salario);
+        this.turno = turno;
     }
+
+    public void setTurno(String turno){
+        this.turno = turno;
+    }
+    public String getTurno(){
+        return turno;
+    }
+
     public void tomarInventario(ArrayList<Inventario> inventario, String tipoObjeto, int cantidad){
         for(Inventario obj : inventario ){
             if (obj.getTipoObjeto() == tipoObjeto) {
@@ -39,5 +52,15 @@ public class Enfermero extends Trabajador {
         notas = sc.nextLine();
         notasEnf.add(notas);
     }
+     @Override
+    public void registrarEntrada() {
 
+    }
+    @Override
+    public void registrarSalida() {
+        
+    @Override
+    public double calcularSalarioMensual() { 
+        return this.getSalario(); 
+    }
 }
