@@ -2,7 +2,7 @@ import java.util.HashMap;
 
 public class Inventario {
 
-    private HashMap<String, Integer> stock; // idMed → cantidad
+    private HashMap<String, Integer> stock; 
 
     public Inventario() {
         stock = new HashMap<>();
