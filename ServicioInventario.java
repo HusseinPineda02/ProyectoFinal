@@ -52,3 +52,5 @@ public class ServicioInventario {
         return hospital.getInventario();
     }
 }
+
+
