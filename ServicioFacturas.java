@@ -4,7 +4,6 @@ public class ServicioFacturas {
 
     private Hospital hospital;   
 
-
     public ServicioFacturas(Hospital hospital) {
         this.hospital = hospital;
     }
@@ -39,8 +38,24 @@ public class ServicioFacturas {
         for (Item i : factura.getItems()) {
             total += i.getPrecio();
         }
-
         return total;
     }
+
+    public void agregarItemAFactura(String idFactura, Item item) {
+        Factura factura = buscarFactura(idFactura);
+
+        if (factura != null) {
+            factura.getItems().add(item);
+        }
+    }
+
+    public void eliminarFactura(String idFactura) {
+        hospital.getFacturas().removeIf(
+            f -> f.getIdFactura().equals(idFactura)
+        );
+    }
 }
+
+
+
 
