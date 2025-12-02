@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class Hospital {
 
+    
     private String nombre;
     private String distrito;
     private String direccion;
@@ -9,17 +10,28 @@ public class Hospital {
     private ArrayList<Paciente> pacientes;
     private ArrayList<Sala> salas;
     private ArrayList<Consultorio> consultorios;
+    //nuevos atributos 
+    private ArrayList<Paciente> pacientes;
+    private ArrayList<Sala> salas;
+    private ArrayList<Consultorio> consultorios;
+
     //constructor
     public Hospital(String nombre, String distrito, String direccion, int capacidadTotal) {
-        this.nombre = nombre;
-        this.distrito = distrito;
-        this.direccion = direccion;
-        this.capacidadTotal = capacidadTotal;
+    this.nombre = nombre;
+    this.distrito = distrito;
+    this.direccion = direccion;
+    this.capacidadTotal = capacidadTotal;
 
-        this.pacientes = new ArrayList<>();
-        this.salas = new ArrayList<>();
-        this.consultorios = new ArrayList<>();
-    }
+    this.pacientes = new ArrayList<>();
+    this.salas = new ArrayList<>();
+    this.consultorios = new ArrayList<>();
+
+    // nuevos metodos
+    this.trabajadores = new ArrayList<>();
+    this.medicamentos = new ArrayList<>();
+    this.inventario = new ArrayList<>();
+}
+
 
     //getters
     public String getNombre() { return nombre; }
@@ -162,17 +174,73 @@ public class Hospital {
         System.out.println("Salas: " + salas.size());
     }
 
-    //Metodos de gestión genéricos "stos métodos no están completamente implementados porque dependen de otras clases
-    //muestran mensajes indicativos y metodos vacios ()temporal
-    public void nuevoTrabajador() { System.out.println("Funcionalidad no implementada."); }
-    public void eliminarTrabajador() { System.out.println("Funcionalidad no implementada."); }
-    public void consultaTrabajadores() { System.out.println("Lista de trabajadores no disponible."); }
-    public void consultaInventario() { System.out.println("Inventario no implementado."); }
-    public void consultaMedicamentos() { System.out.println("Gestión de medicamentos no implementada."); }
-    public void consultasAmbientes() {
-        System.out.println("Ambientes del Hospital");
-        mostrarSalas();
-        System.out.println();
-        mostrarConsultorios();
+   //Nuevos Metodos Para Trabajador
+    public void nuevoTrabajador(Trabajador trabajador) {
+    if (trabajador == null) {
+        System.out.println("Error: no se puede registrar un trabajador nulo.");
+        return;
     }
+
+    for (Trabajador t : trabajadores) {
+        if (t.getDni() == trabajador.getDni()) {
+            System.out.println("Ya existe un trabajador con ese DNI.");
+            return;
+        }
+    }
+
+    trabajadores.add(trabajador);
+    System.out.println("Trabajador " + trabajador.getNombre() + " registrado correctamente.");
+}
+
+public void eliminarTrabajador(int dni) {
+    for (int i = 0; i < trabajadores.size(); i++) {
+        if (trabajadores.get(i).getDni() == dni) {
+            Trabajador t = trabajadores.remove(i);
+            System.out.println("Trabajador " + t.getNombre() + " eliminado.");
+            return;
+        }
+    }
+    System.out.println("No se encontró trabajador con DNI " + dni);
+}
+
+public void consultaTrabajadores() {
+    if (trabajadores.isEmpty()) {
+        System.out.println("No hay trabajadores registrados.");
+        return;
+    }
+
+    System.out.println("Lista de Trabajadores:");
+    for (Trabajador t : trabajadores)
+        System.out.println("- " + t.getNombre() + " (" + t.getCargo() + ")");
+}
+    //Nuevo Metodo Para Inventario, Medicamento y Ambiente
+    public void consultaInventario() {
+    if (inventario.isEmpty()) {
+        System.out.println("Inventario vacío.");
+        return;
+    }
+
+    System.out.println("Inventario del Hospital:");
+    for (InventarioItem item : inventario) {
+        System.out.println("- " + item.getNombre() + " | Cantidad: " + item.getCantidad());
+    }
+}
+
+public void consultaMedicamentos() {
+    if (medicamentos.isEmpty()) {
+        System.out.println("No hay medicamentos registrados.");
+        return;
+    }
+
+    System.out.println("Medicamentos disponibles:");
+    for (Medicamento m : medicamentos) {
+        System.out.println("- " + m.getNombre() + " | Stock: " + m.getStock());
+    }
+}
+
+public void consultasAmbientes() {
+    System.out.println("Ambientes del Hospital");
+    mostrarSalas();
+    System.out.println();
+    mostrarConsultorios();
 }
