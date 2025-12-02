@@ -4,7 +4,6 @@ public class ServicioRecetas {
 
     private Hospital hospital;  
 
-
     public ServicioRecetas(Hospital hospital) {
         this.hospital = hospital;
     }
@@ -30,7 +29,6 @@ public class ServicioRecetas {
                 resultado.add(r);
             }
         }
-
         return resultado;
     }
 
@@ -42,7 +40,17 @@ public class ServicioRecetas {
                 resultado.add(r);
             }
         }
-
         return resultado;
     }
+    public void eliminarReceta(String idReceta) {
+        hospital.getRecetas().removeIf(r -> r.getIdReceta().equals(idReceta));
+    }
+
+    public void modificarIndicaciones(String idReceta, String nuevasIndicaciones) {
+        Receta receta = buscarReceta(idReceta);
+        if (receta != null) {
+            receta.setIndicaciones(nuevasIndicaciones);
+        }
+    }
 }
+
