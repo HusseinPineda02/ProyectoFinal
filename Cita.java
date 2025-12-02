@@ -1,21 +1,34 @@
-public class Cita {
-    private String paciente;
-    private String doctor;
-    private String fecha;
-    private String motivo;
+import java.util.Date;
 
-    public Cita(String paciente, String doctor, String fecha, String motivo) {
+public class Cita {
+    private int idCita;
+    private Date fechaCita;
+    private String hora;
+    private String especialidad;
+    private Paciente paciente;
+    private Ambiente ambiente;
+
+    public Cita(int idCita, Date fechaCita, String hora, String especialidad,
+                Paciente paciente, Ambiente ambiente) {
+        this.idCita = idCita;
+        this.fechaCita = fechaCita;
+        this.hora = hora;
+        this.especialidad = especialidad;
         this.paciente = paciente;
-        this.doctor = doctor;
-        this.fecha = fecha;
-        this.motivo = motivo;
+        this.ambiente = ambiente;
+        ambiente.agregarCita(this);
     }
 
     public void mostrarDatosCita() {
-        System.out.println("---- DATOS DE LA CITA ----");
-        System.out.println("Paciente: " + paciente);
-        System.out.println("Doctor: " + doctor);
-        System.out.println("Fecha: " + fecha);
-        System.out.println("Motivo: " + motivo);
+        System.out.println("---CITA #" + idCita + "---");
+        System.out.println("Paciente: " + paciente.getNombreCompleto());
+        System.out.println("Fecha: " + fechaCita + " | Hora: " + hora);
+        System.out.println("Especialidad: " + especialidad);
+        ambiente.mostrarInformacion();
+    }
+
+    public void cancelarCita() {
+        ambiente.liberar();
+        System.out.println("Cita #" + idCita + " cancelada y ambiente liberado");
     }
 }
