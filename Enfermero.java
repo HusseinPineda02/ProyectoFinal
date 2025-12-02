@@ -10,7 +10,9 @@ public class Enfermero extends Trabajador {
 
     ArrayList<String> notasEnf = new ArrayList<>();
 
-    public Enfermero(String nombre, String apellidoP, String apellidoM, String dni, LocalDate fechaNacimiento, String idTrabajador, double salario, String turno) {
+    public Enfermero(String nombre, String apellidoP, String apellidoM, String dni,
+                     LocalDate fechaNacimiento, String idTrabajador, double salario, String turno) {
+
         super(nombre, apellidoP, apellidoM, dni, fechaNacimiento, idTrabajador, salario);
         this.turno = turno;
     }
@@ -24,22 +26,30 @@ public class Enfermero extends Trabajador {
 
     public void tomarInventario(ArrayList<Inventario> inventario, String tipoObjeto, int cantidad){
         for(Inventario obj : inventario ){
-            if (obj.getTipoObjeto() == tipoObjeto) {
-                obj.setCantidad(obj.getCantidad()-cantidad);
+            if (obj.getTipoObjeto().equals(tipoObjeto)) {
+
+                int nuevaCantidad = obj.getCantidad() - cantidad;
+                if (nuevaCantidad < 0) nuevaCantidad = 0;
+
+                obj.setCantidad(nuevaCantidad);
             }
         }
-    } 
+    }
 
     public void administrarMedicamento(ArrayList<Medicamento> medicamentos, String nombreMedicamento, int cantidad){
         for(Medicamento obj : medicamentos ){
-            if (obj.getNombreMedicamento() == nombreMedicamento) {
-                obj.setCantidad(obj.getStock() - cantidad);
+            if (obj.getNombreMedicamento().equals(nombreMedicamento)) {
+
+                int nuevoStock = obj.getStock() - cantidad;
+                if (nuevoStock < 0) nuevoStock = 0;
+
+                obj.setStock(nuevoStock);
             }
         }
     }
 
     public void tomarSignosVitales() {
-        System.out.println("Tomar signos vitales");
+        System.out.println("Tomando signos vitales...");
     }
 
     public void asistirDoctor(Doctor doctor) {
@@ -47,20 +57,23 @@ public class Enfermero extends Trabajador {
     }
 
     public void registrarNotasEnfermeria() {
-        String notas;
-        System.out.println("Escribir notas: ");
-        notas = sc.nextLine();
+        System.out.println("Escribir notas:");
+        String notas = sc.nextLine();
         notasEnf.add(notas);
     }
-     @Override
-    public void registrarEntrada() {
 
+    @Override
+    public void registrarEntrada() {
+        System.out.println("Enfermero " + getNombre() + " registró entrada.");
     }
+
     @Override
     public void registrarSalida() {
-        
+        System.out.println("Enfermero " + getNombre() + " registró salida.");
+    }
+
     @Override
-    public double calcularSalarioMensual() { 
-        return this.getSalario(); 
+    public double calcularSalarioMensual() {
+        return this.getSalario();
     }
 }
