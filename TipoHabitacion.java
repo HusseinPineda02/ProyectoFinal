@@ -6,3 +6,4 @@ public enum TipoHabitacion {
     UCI,
     OBSERVACION
 }
+
