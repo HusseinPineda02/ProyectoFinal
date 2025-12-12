@@ -120,6 +120,14 @@ public class HabitacionDAO implements ICrudDAO<Habitacion> {
 
             ps.setInt(1, id);
             ps.executeUpdate();
-        }
+            } catch (SQLException e) {
+                if (e.getErrorCode() == 547) {
+                    throw new SQLException(
+                        "No se puede eliminar la habitación porque tiene citas o cirugías asociadas. " +
+                        "Primero elimina o reprograma esos registros.", e
+                    );
+                }
+                throw e;
+            }
     }
 }
