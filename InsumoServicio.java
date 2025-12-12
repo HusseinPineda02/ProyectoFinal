@@ -11,6 +11,7 @@ public class InsumoServicio {
     public InsumoServicio(Hospital hospital) {
         this.hospital = hospital;
     }
+
     public void registrarInsumo(Insumo i) {
         hospital.getInsumos().add(i);
     }
