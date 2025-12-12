@@ -1,9 +1,9 @@
 package hospital.ui;
 
-import hospital.dao.MedicamentoDAO;
 import hospital.dao.InsumoDAO;
-import javax.swing.*;
+import hospital.dao.MedicamentoDAO;
 import java.awt.*;
+import javax.swing.*;
 
 public class DialogoInventario extends JDialog {
 

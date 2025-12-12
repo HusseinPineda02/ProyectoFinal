@@ -2,12 +2,11 @@ package hospital.ui;
 
 import hospital.dao.InsumoDAO;
 import hospital.modelo.Insumo;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class VentanaInsumos extends JDialog {
 

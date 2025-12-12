@@ -2,10 +2,9 @@ package hospital.ui;
 
 import hospital.dao.DoctorDAO;
 import hospital.modelo.Doctor;
-
-import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
+import javax.swing.*;
 
 public class DialogoDoctorFormulario extends JDialog {
 

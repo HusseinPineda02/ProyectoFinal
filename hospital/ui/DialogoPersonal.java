@@ -2,8 +2,8 @@ package hospital.ui;
 
 import hospital.dao.DoctorDAO;
 import hospital.dao.EnfermeroDAO;
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class DialogoPersonal extends JDialog {
 

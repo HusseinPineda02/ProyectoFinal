@@ -2,10 +2,9 @@ package hospital.ui;
 
 import hospital.dao.EnfermeroDAO;
 import hospital.modelo.Enfermero;
-
-import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
+import javax.swing.*;
 
 public class DialogoEnfermeroFormulario extends JDialog {
 

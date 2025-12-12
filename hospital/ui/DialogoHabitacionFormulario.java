@@ -3,10 +3,9 @@ package hospital.ui;
 import hospital.dao.HabitacionDAO;
 import hospital.modelo.Habitacion;
 import hospital.modelo.TipoHabitacion;
-
-import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
+import javax.swing.*;
 
 public class DialogoHabitacionFormulario extends JDialog {
 
