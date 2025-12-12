@@ -11,6 +11,7 @@ public class MedicamentoServicio {
     public MedicamentoServicio(Hospital hospital) {
         this.hospital = hospital;
     }
+
     public void registrarMedicamento(Medicamento m) {
         hospital.getMedicamentos().add(m);
     }
@@ -43,6 +44,7 @@ public class MedicamentoServicio {
     public List<Medicamento> listarMedicamentos() {
         return new ArrayList<>(hospital.getMedicamentos());
     }
+
     public boolean disminuirStock(int id, int cantidad) {
         Medicamento m = buscarMedicamento(id);
         if (m == null || m.getStock() < cantidad) return false;
