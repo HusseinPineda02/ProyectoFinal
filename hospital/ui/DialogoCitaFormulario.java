@@ -20,7 +20,7 @@ public class DialogoCitaFormulario extends JDialog {
     private JComboBox<Habitacion> cboHabitacion;
     private JComboBox<Cita.Estado> cboEstado;
 
-    private Cita citaOriginal;
+    private Cita citaOriginal;  
     private CitaDAO citaDAO;
     private PacienteDAO pacienteDAO;
     private DoctorDAO doctorDAO;
