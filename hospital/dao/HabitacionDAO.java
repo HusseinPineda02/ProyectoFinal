@@ -2,10 +2,10 @@ package hospital.dao;
 
 import hospital.modelo.Habitacion;
 import hospital.modelo.TipoHabitacion;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 public class HabitacionDAO implements ICrudDAO<Habitacion> {
 
@@ -30,7 +30,13 @@ public class HabitacionDAO implements ICrudDAO<Habitacion> {
                     h.setIdHabitacion(rs.getInt(1));
                 }
             }
-        }
+        } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null,
+                    "Error al insertar: " + e.getMessage(),
+                    "Error SQL",
+                    JOptionPane.ERROR_MESSAGE);
+                throw e;
+            }
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 public class PacienteDAO {
 
@@ -31,7 +32,13 @@ public class PacienteDAO {
             ps.setString(7, p.getDireccion());
 
             ps.executeUpdate();
-        }
+        } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null,
+                    "Error al insertar: " + e.getMessage(),
+                    "Error SQL",
+                    JOptionPane.ERROR_MESSAGE);
+                throw e;
+            }
     }
 
     public Paciente buscarPorDni(String dni) throws SQLException {

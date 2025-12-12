@@ -1,10 +1,10 @@
 package hospital.dao;
 
 import hospital.modelo.Medicamento;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 public class MedicamentoDAO implements ICrudDAO<Medicamento> {
 
@@ -30,7 +30,13 @@ public class MedicamentoDAO implements ICrudDAO<Medicamento> {
                     m.setIdMedicamento(rs.getInt(1));
                 }
             }
-        }
+        } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null,
+                    "Error al insertar: " + e.getMessage(),
+                    "Error SQL",
+                    JOptionPane.ERROR_MESSAGE);
+                throw e;
+            }
     }
 
     @Override

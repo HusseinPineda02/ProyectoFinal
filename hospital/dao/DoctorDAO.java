@@ -4,14 +4,15 @@ import hospital.modelo.Doctor;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 public class DoctorDAO implements ICrudDAO<Doctor> {
 
     @Override
     public void insertar(Doctor d) throws SQLException {
 
-        String sql = "INSERT INTO Doctor(idDoctor, nombre, apellidoP, apellidoM, salario, especialidad) " +
-                     "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Doctor(dni, nombre, apellidoP, apellidoM, salario, especialidad)" +
+            "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection con = ConexionBD.obtenerConexion();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -30,7 +31,13 @@ public class DoctorDAO implements ICrudDAO<Doctor> {
                     d.setIdTrabajador(rs.getInt(1));
                 }
             }
-        }
+        } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null,
+                    "Error al insertar: " + e.getMessage(),
+                    "Error SQL",
+                    JOptionPane.ERROR_MESSAGE);
+                throw e;
+            }
     }
 
     @Override
@@ -119,13 +126,4 @@ public class DoctorDAO implements ICrudDAO<Doctor> {
             ps.executeUpdate();
         }
     }
-    
-    public static void main(String[] args) {
-    try (Connection con = ConexionBD.obtenerConexion()) {
-        System.out.println("Conexión exitosa!");
-    } catch (Exception e) {
-        System.out.println("Error: " + e.getMessage());
-        e.printStackTrace();
-    }
-}
 }

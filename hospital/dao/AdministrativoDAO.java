@@ -1,10 +1,10 @@
 package hospital.dao;
 
 import hospital.modelo.Administrativo;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 public class AdministrativoDAO implements ICrudDAO<Administrativo> {
 
@@ -30,6 +30,12 @@ public class AdministrativoDAO implements ICrudDAO<Administrativo> {
                 if (rs.next()) {
                     a.setIdTrabajador(rs.getInt(1));
                 }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null,
+                    "Error al insertar: " + e.getMessage(),
+                    "Error SQL",
+                    JOptionPane.ERROR_MESSAGE);
+                throw e;
             }
         }
     }
@@ -58,7 +64,13 @@ public class AdministrativoDAO implements ICrudDAO<Administrativo> {
                     return new Administrativo(id, dni, nombre, apP, apM, salario, area);
                 }
             }
-        }
+        } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null,
+                    "Error al insertar: " + e.getMessage(),
+                    "Error SQL",
+                    JOptionPane.ERROR_MESSAGE);
+                throw e;
+            }
         return null;
     }
 
@@ -121,4 +133,5 @@ public class AdministrativoDAO implements ICrudDAO<Administrativo> {
             ps.executeUpdate();
         }
     }
+
 }

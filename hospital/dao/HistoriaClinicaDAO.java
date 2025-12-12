@@ -2,8 +2,8 @@ package hospital.dao;
 
 import hospital.modelo.HistoriaClinica;
 import hospital.modelo.Paciente;
-
 import java.sql.*;
+import javax.swing.JOptionPane;
 
 public class HistoriaClinicaDAO {
 
@@ -23,7 +23,13 @@ public class HistoriaClinicaDAO {
                     return new HistoriaClinica(idHistoria, p);
                 }
             }
-        }
+        } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null,
+                    "Error al insertar: " + e.getMessage(),
+                    "Error SQL",
+                    JOptionPane.ERROR_MESSAGE);
+                throw e;
+            }
         return null;
     }
 

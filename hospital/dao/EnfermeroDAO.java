@@ -1,10 +1,10 @@
 package hospital.dao;
 
 import hospital.modelo.Enfermero;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 public class EnfermeroDAO implements ICrudDAO<Enfermero> {
 
@@ -31,7 +31,13 @@ public class EnfermeroDAO implements ICrudDAO<Enfermero> {
                     e.setIdTrabajador(rs.getInt(1));
                 }
             }
-        }
+        } catch (SQLException f) {
+                JOptionPane.showMessageDialog(null,
+                    "Error al insertar: " + f.getMessage(),
+                    "Error SQL",
+                    JOptionPane.ERROR_MESSAGE);
+                throw f;
+            }
     }
 
     @Override

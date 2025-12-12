@@ -4,8 +4,10 @@ import hospital.modelo.*;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 public class CirugiaDAO {
 
@@ -21,7 +23,11 @@ public class CirugiaDAO {
             ps.setInt(2, c.getCirujano().getIdTrabajador()); 
             ps.setInt(3, c.getQuirofano().getIdHabitacion());
             ps.setDate(4, Date.valueOf(c.getFecha()));
-            ps.setTime(5, Time.valueOf(c.getHora()));
+            //ps.setTime(5, Time.valueOf(c.getHora().withSecond(0).withNano(0)));
+
+           LocalTime t = c.getHora().withSecond(0).withNano(0);
+            ps.setTime(5, java.sql.Time.valueOf(t));
+
             ps.setString(6, c.getDescripcion());
 
             ps.setString(7, c.getEstado().name());
@@ -31,7 +37,13 @@ public class CirugiaDAO {
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) c.setIdCirugia(rs.getInt(1));
             }
-        }
+        } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null,
+                    "Error al insertar: " + e.getMessage(),
+                    "Error SQL",
+                    JOptionPane.ERROR_MESSAGE);
+                throw e;
+            }
     }
 
     public Cirugia buscar(int idCirugia) throws SQLException {
@@ -118,7 +130,10 @@ public class CirugiaDAO {
             ps.setInt(2, c.getCirujano().getIdTrabajador());
             ps.setInt(3, c.getQuirofano().getIdHabitacion());
             ps.setDate(4, Date.valueOf(c.getFecha()));
-            ps.setTime(5, Time.valueOf(c.getHora()));
+
+            LocalTime t = c.getHora().withSecond(0).withNano(0);
+            ps.setTime(5, Time.valueOf(t)); 
+           // ps.setTime(5, Time.valueOf(c.getHora().withSecond(0).withNano(0)));
             ps.setString(6, c.getDescripcion());
             ps.setString(7, c.getEstado().name());
             ps.setInt(8, c.getIdCirugia());
@@ -137,5 +152,70 @@ public class CirugiaDAO {
             ps.setInt(1, idCirugia);
             ps.executeUpdate();
         }
+    }
+    public boolean existeCirugiaEnHorario(int idHabitacion, LocalDate fecha, LocalTime hora) throws SQLException {
+
+        String sql = """
+            SELECT COUNT(*)
+            FROM Cirugia
+            WHERE idHabitacion = ?
+            AND fecha = ?
+            AND hora = CONVERT(time(0), ?)
+        """;
+
+        try (Connection con = ConexionBD.obtenerConexion();
+            PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idHabitacion);
+            ps.setDate(2, Date.valueOf(fecha));
+
+            LocalTime t = hora.withSecond(0).withNano(0);
+            String hhmmss = t.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+            ps.setString(3, hhmmss);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
+            }
+        }
+    }
+
+    public void marcarRealizadaYRegistrarHistoria(int idCirugia) throws SQLException {
+
+        Cirugia c = buscar(idCirugia);
+        if (c == null) throw new SQLException("Cirugía no encontrada con ID: " + idCirugia);
+
+        c.setEstado(Cirugia.Estado.REALIZADA);
+        actualizar(c);
+
+        Paciente p = c.getPaciente();
+        if (p == null) throw new SQLException("La cirugía no tiene paciente asociado.");
+
+        HistoriaClinicaDAO hdao = new HistoriaClinicaDAO();
+        HistoriaClinica historia = hdao.buscarPorPaciente(p.getDni());
+
+        if (historia == null) {
+            historia = hdao.crear(p);
+            if (historia == null) throw new SQLException("No se pudo crear historia clínica.");
+        }
+
+        p.setHistoriaClinica(historia);
+
+        Doctor d = c.getCirujano();
+        if (d == null) throw new SQLException("La cirugía no tiene doctor asociado.");
+
+        RegistroClinico r = new RegistroClinico(
+                0,
+                c.getFecha(),
+                d,
+                RegistroClinico.Tipo.CIRUGIA,
+                (c.getDescripcion() != null && !c.getDescripcion().isBlank())
+                        ? c.getDescripcion()
+                        : "Cirugía"
+        );
+
+        RegistroClinicoDAO rdao = new RegistroClinicoDAO();
+        rdao.insertar(r, historia.getIdHistoria());
+
+        historia.agregarRegistro(r);
     }
 }
