@@ -124,6 +124,16 @@ public class DoctorDAO implements ICrudDAO<Doctor> {
 
             ps.setInt(1, idDoctor);
             ps.executeUpdate();
+        } catch (SQLException e) {
+        if (e.getErrorCode() == 547) {
+            JOptionPane.showMessageDialog(null,
+                "No se puede eliminar el doctor porque tiene citas/cirugías o registros clínicos asociados.\n" +
+                "Solución: reasignar esos registros a otro doctor.",
+                "Restricción de integridad",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+            }
+        throw e;
         }
     }
 }
