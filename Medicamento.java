@@ -4,7 +4,7 @@ public class Medicamento {
 
     private int idMedicamento;
     private String nombre;
-    private String tipo;   
+    private String tipo;        
     private String descripcion;
     private int stock;
     private double precioUnitario;
