@@ -1,0 +1,326 @@
+USE master;
+GO
+
+IF DB_ID('HospitalDB') IS NOT NULL
+BEGIN
+    ALTER DATABASE HospitalDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE HospitalDB;
+END
+GO
+
+CREATE DATABASE HospitalDB;
+GO
+
+USE HospitalDB;
+GO
+
+CREATE TABLE dbo.Paciente (
+    dni              CHAR(8)        NOT NULL,
+    nombre           VARCHAR(60)    NOT NULL,
+    apellidoP        VARCHAR(60)    NOT NULL,
+    apellidoM        VARCHAR(60)    NOT NULL,
+    fechaNacimiento  DATE           NULL,
+    telefono         VARCHAR(9)     NOT NULL,
+    direccion        VARCHAR(120)   NULL,
+
+    CONSTRAINT PK_Paciente PRIMARY KEY (dni),
+
+    CONSTRAINT CK_Paciente_DNI_Formato
+        CHECK (dni NOT LIKE '%[^0-9]%' AND LEN(dni) = 8),
+
+    CONSTRAINT CK_Paciente_Telefono
+        CHECK (telefono NOT LIKE '%[^0-9]%'
+               AND LEN(telefono) = 9
+               AND LEFT(telefono, 1) = '9')
+);
+GO
+
+CREATE TABLE dbo.Doctor (
+    idDoctor     INT IDENTITY(1,1) NOT NULL,
+    dni          CHAR(8)           NOT NULL,
+    nombre       VARCHAR(60)       NOT NULL,
+    apellidoP    VARCHAR(60)       NOT NULL,
+    apellidoM    VARCHAR(60)       NOT NULL,
+    salario      DECIMAL(10,2)     NOT NULL,
+    especialidad VARCHAR(80)       NOT NULL,
+
+    CONSTRAINT PK_Doctor PRIMARY KEY (idDoctor),
+    CONSTRAINT UQ_Doctor_DNI UNIQUE (dni),
+    CONSTRAINT CK_Doctor_DNI CHECK (dni NOT LIKE '%[^0-9]%' AND LEN(dni) = 8),
+    CONSTRAINT CK_Doctor_Salario CHECK (salario > 0)
+);
+GO
+
+CREATE TABLE dbo.Enfermero (
+    idEnfermero  INT IDENTITY(1,1) NOT NULL,
+    dni          CHAR(8)           NOT NULL,
+    nombre       VARCHAR(60)       NOT NULL,
+    apellidoP    VARCHAR(60)       NOT NULL,
+    apellidoM    VARCHAR(60)       NOT NULL,
+    salario      DECIMAL(10,2)     NOT NULL,
+    turno        VARCHAR(40)       NOT NULL,
+
+    CONSTRAINT PK_Enfermero PRIMARY KEY (idEnfermero),
+    CONSTRAINT UQ_Enfermero_DNI UNIQUE (dni),
+    CONSTRAINT CK_Enfermero_DNI CHECK (dni NOT LIKE '%[^0-9]%' AND LEN(dni) = 8),
+    CONSTRAINT CK_Enfermero_Salario CHECK (salario > 0)
+);
+GO
+
+CREATE TABLE dbo.Administrativo (
+    idAdministrativo INT IDENTITY(1,1) NOT NULL,
+    dni              CHAR(8)           NOT NULL,
+    nombre           VARCHAR(60)       NOT NULL,
+    apellidoP        VARCHAR(60)       NOT NULL,
+    apellidoM        VARCHAR(60)       NOT NULL,
+    salario          DECIMAL(10,2)     NOT NULL,
+    area             VARCHAR(80)       NOT NULL,
+
+    CONSTRAINT PK_Administrativo PRIMARY KEY (idAdministrativo),
+    CONSTRAINT UQ_Administrativo_DNI UNIQUE (dni),
+    CONSTRAINT CK_Administrativo_DNI CHECK (dni NOT LIKE '%[^0-9]%' AND LEN(dni) = 8),
+    CONSTRAINT CK_Administrativo_Salario CHECK (salario > 0)
+);
+GO
+
+CREATE TABLE dbo.Habitacion (
+    idHabitacion INT IDENTITY(1,1) NOT NULL,
+    tipo         VARCHAR(20)       NOT NULL,
+    piso         INT               NOT NULL,
+    numero       VARCHAR(10)       NOT NULL,
+    disponible   BIT               NOT NULL CONSTRAINT DF_Habitacion_disponible DEFAULT (1),
+
+    CONSTRAINT PK_Habitacion PRIMARY KEY (idHabitacion),
+
+    CONSTRAINT CK_Habitacion_Tipo
+        CHECK (tipo IN ('CONSULTORIO','QUIROFANO','UCI','OBSERVACION')),
+
+    CONSTRAINT CK_Habitacion_Piso CHECK (piso >= 0),
+
+    CONSTRAINT UQ_Habitacion_Piso_Numero UNIQUE (piso, numero)
+);
+GO
+
+CREATE TABLE dbo.Medicamento (
+    idMedicamento  INT IDENTITY(1,1) NOT NULL,
+    nombre         VARCHAR(80)       NOT NULL,
+    tipo           VARCHAR(60)       NOT NULL,
+    descripcion    VARCHAR(200)      NULL,
+    stock          INT               NOT NULL CONSTRAINT DF_Medicamento_stock DEFAULT (0),
+    precioUnitario DECIMAL(10,2)     NOT NULL CONSTRAINT DF_Medicamento_precio DEFAULT (0),
+
+    CONSTRAINT PK_Medicamento PRIMARY KEY (idMedicamento),
+    CONSTRAINT CK_Medicamento_Stock_Pos CHECK (stock >= 0),
+    CONSTRAINT CK_Medicamento_Precio_Pos CHECK (precioUnitario >= 0)
+);
+GO
+
+CREATE TABLE dbo.Insumo (
+    idInsumo       INT IDENTITY(1,1) NOT NULL,
+    nombre         VARCHAR(80)       NOT NULL,
+    categoria      VARCHAR(60)       NOT NULL,
+    descripcion    VARCHAR(200)      NULL,
+    stock          INT               NOT NULL CONSTRAINT DF_Insumo_stock DEFAULT (0),
+    precioUnitario DECIMAL(10,2)     NOT NULL CONSTRAINT DF_Insumo_precio DEFAULT (0),
+
+    CONSTRAINT PK_Insumo PRIMARY KEY (idInsumo),
+    CONSTRAINT CK_Insumo_Stock_Pos CHECK (stock >= 0),
+    CONSTRAINT CK_Insumo_Precio_Pos CHECK (precioUnitario >= 0)
+);
+GO
+
+CREATE TABLE dbo.HistoriaClinica (
+    idHistoria  INT IDENTITY(1,1) NOT NULL,
+    dniPaciente CHAR(8)           NOT NULL,
+
+    CONSTRAINT PK_HistoriaClinica PRIMARY KEY (idHistoria),
+    CONSTRAINT UQ_HistoriaClinica_Paciente UNIQUE (dniPaciente),
+    CONSTRAINT FK_HistoriaClinica_Paciente
+        FOREIGN KEY (dniPaciente) REFERENCES dbo.Paciente(dni)
+        ON DELETE CASCADE
+);
+GO
+
+CREATE TABLE dbo.RegistroClinico (
+    idRegistro   INT IDENTITY(1,1) NOT NULL,
+    idHistoria   INT               NOT NULL,
+    fecha        DATE              NOT NULL,
+    idDoctor     INT               NOT NULL,
+    tipo         VARCHAR(20)       NOT NULL,
+    descripcion  VARCHAR(500)      NOT NULL,
+
+    CONSTRAINT PK_RegistroClinico PRIMARY KEY (idRegistro),
+
+    CONSTRAINT FK_RegistroClinico_Historia
+        FOREIGN KEY (idHistoria) REFERENCES dbo.HistoriaClinica(idHistoria)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_RegistroClinico_Doctor
+        FOREIGN KEY (idDoctor) REFERENCES dbo.Doctor(idDoctor),
+
+    CONSTRAINT CK_RegistroClinico_Tipo
+        CHECK (tipo IN ('CONSULTA','CIRUGIA','CONTROL','URGENCIA','LABORATORIO','OTRO'))
+);
+GO
+
+CREATE TABLE dbo.Cita (
+    idCita       INT IDENTITY(1,1) NOT NULL,
+    dniPaciente  CHAR(8)           NOT NULL,
+    idDoctor     INT               NOT NULL,
+    idHabitacion INT               NOT NULL,
+    fecha        DATE              NOT NULL,
+    hora         TIME(0)           NOT NULL,
+    motivo       VARCHAR(250)      NOT NULL,
+    estado       VARCHAR(20)       NOT NULL,
+
+    CONSTRAINT PK_Cita PRIMARY KEY (idCita),
+
+    CONSTRAINT FK_Cita_Paciente
+        FOREIGN KEY (dniPaciente) REFERENCES dbo.Paciente(dni),
+
+    CONSTRAINT FK_Cita_Doctor
+        FOREIGN KEY (idDoctor) REFERENCES dbo.Doctor(idDoctor),
+
+    CONSTRAINT FK_Cita_Habitacion
+        FOREIGN KEY (idHabitacion) REFERENCES dbo.Habitacion(idHabitacion),
+
+    CONSTRAINT CK_Cita_Estado
+        CHECK (estado IN ('PROGRAMADA','ATENDIDA','CANCELADA')),
+
+    CONSTRAINT UQ_Cita_Hab_Fecha_Hora UNIQUE (idHabitacion, fecha, hora),
+    CONSTRAINT UQ_Cita_Doc_Fecha_Hora UNIQUE (idDoctor, fecha, hora)
+);
+GO
+
+CREATE TABLE dbo.Cirugia (
+    idCirugia    INT IDENTITY(1,1) NOT NULL,
+    dniPaciente  CHAR(8)           NOT NULL,
+    idDoctor     INT               NOT NULL,
+    idHabitacion INT               NOT NULL,
+    fecha        DATE              NOT NULL,
+    hora         TIME(0)           NOT NULL,
+    descripcion  VARCHAR(250)      NOT NULL,
+    estado       VARCHAR(20)       NOT NULL,
+
+    CONSTRAINT PK_Cirugia PRIMARY KEY (idCirugia),
+
+    CONSTRAINT FK_Cirugia_Paciente
+        FOREIGN KEY (dniPaciente) REFERENCES dbo.Paciente(dni),
+
+    CONSTRAINT FK_Cirugia_Doctor
+        FOREIGN KEY (idDoctor) REFERENCES dbo.Doctor(idDoctor),
+
+    CONSTRAINT FK_Cirugia_Habitacion
+        FOREIGN KEY (idHabitacion) REFERENCES dbo.Habitacion(idHabitacion),
+
+    CONSTRAINT CK_Cirugia_Estado
+        CHECK (estado IN ('PROGRAMADA','REALIZADA','CANCELADA')),
+
+    CONSTRAINT UQ_Cirugia_Hab_Fecha_Hora UNIQUE (idHabitacion, fecha, hora),
+    CONSTRAINT UQ_Cirugia_Doc_Fecha_Hora UNIQUE (idDoctor, fecha, hora)
+);
+GO
+
+CREATE TRIGGER dbo.TR_Paciente_CrearHistoria
+ON dbo.Paciente
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO dbo.HistoriaClinica(dniPaciente)
+    SELECT i.dni
+    FROM inserted i
+    WHERE NOT EXISTS (
+        SELECT 1 FROM dbo.HistoriaClinica hc WHERE hc.dniPaciente = i.dni
+    );
+END
+GO
+
+CREATE TRIGGER dbo.TR_Cita_ValidarHabitacion
+ON dbo.Cita
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (
+        SELECT 1
+        FROM inserted i
+        JOIN dbo.Habitacion h ON h.idHabitacion = i.idHabitacion
+        WHERE h.disponible = 0 OR h.tipo <> 'CONSULTORIO'
+    )
+    BEGIN
+        RAISERROR('Cita inválida: la habitación debe ser CONSULTORIO y estar DISPONIBLE.', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
+END
+GO
+
+CREATE TRIGGER dbo.TR_Cirugia_ValidarQuirofano
+ON dbo.Cirugia
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (
+        SELECT 1
+        FROM inserted i
+        JOIN dbo.Habitacion h ON h.idHabitacion = i.idHabitacion
+        WHERE h.disponible = 0 OR h.tipo <> 'QUIROFANO'
+    )
+    BEGIN
+        RAISERROR('Cirugía inválida: la habitación debe ser QUIROFANO y estar DISPONIBLE.', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
+END
+GO
+
+CREATE TRIGGER dbo.TR_Cita_NoCruzarConCirugia
+ON dbo.Cita
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (
+        SELECT 1
+        FROM inserted i
+        JOIN dbo.Cirugia s
+          ON s.fecha = i.fecha
+         AND s.hora  = i.hora
+         AND (s.idHabitacion = i.idHabitacion OR s.idDoctor = i.idDoctor)
+    )
+    BEGIN
+        RAISERROR('Cita inválida: choca con una cirugía (mismo doctor o habitación en la misma fecha/hora).', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
+END
+GO
+
+CREATE TRIGGER dbo.TR_Cirugia_NoCruzarConCita
+ON dbo.Cirugia
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (
+        SELECT 1
+        FROM inserted i
+        JOIN dbo.Cita c
+          ON c.fecha = i.fecha
+         AND c.hora  = i.hora
+         AND (c.idHabitacion = i.idHabitacion OR c.idDoctor = i.idDoctor)
+    )
+    BEGIN
+        RAISERROR('Cirugía inválida: choca con una cita (mismo doctor o habitación en la misma fecha/hora).', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
+END
+GO
