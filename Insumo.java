@@ -4,7 +4,7 @@ public class Insumo {
 
     private int idInsumo;
     private String nombre;
-    private String categoria;   // Jeringa, Gasa, Guantes, etc.
+    private String categoria;
     private String descripcion;
     private int stock;
     private double precioUnitario;
