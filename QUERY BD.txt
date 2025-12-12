@@ -1,12 +1,3 @@
-USE master;
-GO
-
-IF DB_ID('HospitalDB') IS NOT NULL
-BEGIN
-    ALTER DATABASE HospitalDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-    DROP DATABASE HospitalDB;
-END
-GO
 
 CREATE DATABASE HospitalDB;
 GO
@@ -135,6 +126,7 @@ CREATE TABLE dbo.HistoriaClinica (
 
     CONSTRAINT PK_HistoriaClinica PRIMARY KEY (idHistoria),
     CONSTRAINT UQ_HistoriaClinica_Paciente UNIQUE (dniPaciente),
+
     CONSTRAINT FK_HistoriaClinica_Paciente
         FOREIGN KEY (dniPaciente) REFERENCES dbo.Paciente(dni)
         ON DELETE CASCADE
@@ -156,7 +148,8 @@ CREATE TABLE dbo.RegistroClinico (
         ON DELETE CASCADE,
 
     CONSTRAINT FK_RegistroClinico_Doctor
-        FOREIGN KEY (idDoctor) REFERENCES dbo.Doctor(idDoctor),
+        FOREIGN KEY (idDoctor) REFERENCES dbo.Doctor(idDoctor)
+        ON DELETE NO ACTION,
 
     CONSTRAINT CK_RegistroClinico_Tipo
         CHECK (tipo IN ('CONSULTA','CIRUGIA','CONTROL','URGENCIA','LABORATORIO','OTRO'))
@@ -176,13 +169,16 @@ CREATE TABLE dbo.Cita (
     CONSTRAINT PK_Cita PRIMARY KEY (idCita),
 
     CONSTRAINT FK_Cita_Paciente
-        FOREIGN KEY (dniPaciente) REFERENCES dbo.Paciente(dni),
+        FOREIGN KEY (dniPaciente) REFERENCES dbo.Paciente(dni)
+        ON DELETE CASCADE,
 
     CONSTRAINT FK_Cita_Doctor
-        FOREIGN KEY (idDoctor) REFERENCES dbo.Doctor(idDoctor),
+        FOREIGN KEY (idDoctor) REFERENCES dbo.Doctor(idDoctor)
+        ON DELETE NO ACTION,
 
     CONSTRAINT FK_Cita_Habitacion
-        FOREIGN KEY (idHabitacion) REFERENCES dbo.Habitacion(idHabitacion),
+        FOREIGN KEY (idHabitacion) REFERENCES dbo.Habitacion(idHabitacion)
+        ON DELETE NO ACTION,
 
     CONSTRAINT CK_Cita_Estado
         CHECK (estado IN ('PROGRAMADA','ATENDIDA','CANCELADA')),
@@ -205,13 +201,16 @@ CREATE TABLE dbo.Cirugia (
     CONSTRAINT PK_Cirugia PRIMARY KEY (idCirugia),
 
     CONSTRAINT FK_Cirugia_Paciente
-        FOREIGN KEY (dniPaciente) REFERENCES dbo.Paciente(dni),
+        FOREIGN KEY (dniPaciente) REFERENCES dbo.Paciente(dni)
+        ON DELETE CASCADE,
 
     CONSTRAINT FK_Cirugia_Doctor
-        FOREIGN KEY (idDoctor) REFERENCES dbo.Doctor(idDoctor),
+        FOREIGN KEY (idDoctor) REFERENCES dbo.Doctor(idDoctor)
+        ON DELETE NO ACTION,
 
     CONSTRAINT FK_Cirugia_Habitacion
-        FOREIGN KEY (idHabitacion) REFERENCES dbo.Habitacion(idHabitacion),
+        FOREIGN KEY (idHabitacion) REFERENCES dbo.Habitacion(idHabitacion)
+        ON DELETE NO ACTION,
 
     CONSTRAINT CK_Cirugia_Estado
         CHECK (estado IN ('PROGRAMADA','REALIZADA','CANCELADA')),
