@@ -167,7 +167,6 @@ public class DialogoCirugiaFormulario extends JDialog {
         txtIdDoctor.setText(String.valueOf(cirugiaOriginal.getCirujano().getIdTrabajador()));
         txtFecha.setText(cirugiaOriginal.getFecha().toString());
 
-        // HH:mm (sin segundos)
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm");
         txtHora.setText(cirugiaOriginal.getHora().format(fmt));
 
@@ -259,4 +258,4 @@ public class DialogoCirugiaFormulario extends JDialog {
             JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-}
+}   
